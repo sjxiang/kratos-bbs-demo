@@ -1,7 +1,7 @@
 package server
 
 import (
-	v1 "kratos-bbs-demo/api/helloworld/v1"
+	v1 "kratos-bbs-demo/api/xiaohongshu/v1"
 	"kratos-bbs-demo/internal/conf"
 	"kratos-bbs-demo/internal/service"
 
@@ -11,7 +11,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, xhs *service.XiaohongshuService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -27,6 +27,7 @@ func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterGreeterServer(srv, greeter)
+	v1.RegisterXiaohongshuServer(srv, xhs)
+	
 	return srv
 }

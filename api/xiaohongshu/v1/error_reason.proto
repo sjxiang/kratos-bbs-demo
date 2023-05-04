@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package bbs.v1;
+
+option go_package = "kratos-bbs-demo/api/bbs/v1;v1";
+
+
+enum ErrorReason {
+  GREETER_UNSPECIFIED = 0;
+  USER_NOT_FOUND = 1;
+}

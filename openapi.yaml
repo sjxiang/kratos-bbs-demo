@@ -3,19 +3,93 @@
 
 openapi: 3.0.3
 info:
-    title: Greeter API
-    description: The greeting service definition.
+    title: Xiaohongshu API
+    description: 服务 - 小红书
     version: 0.0.1
 paths:
-    /helloworld/{name}:
+    /api/articles:
         get:
             tags:
-                - Greeter
-                - subgroup
-            description: Sends a greeting
-            operationId: Greeter_SayHello
+                - Xiaohongshu
+            description: 帖子
+            operationId: Xiaohongshu_ListArticles
             parameters:
-                - name: name
+                - name: tag
+                  in: query
+                  schema:
+                    type: string
+                - name: author
+                  in: query
+                  schema:
+                    type: string
+                - name: favorited
+                  in: query
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: offset
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.MultipleArticlesReply'
+        post:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_CreateArticle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.CreateArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.SingleArticleReply'
+    /api/articles/feed:
+        get:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_FeedArticles
+            parameters:
+                - name: limit
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: offset
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.MultipleArticlesReply'
+    /api/articles/{slug}:
+        get:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_GetArticle
+            parameters:
+                - name: slug
                   in: path
                   required: true
                   schema:
@@ -26,14 +100,597 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+                                $ref: '#/components/schemas/xiaohongshu.v1.SingleArticleReply'
+        put:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_UpdateArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.UpdateArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.SingleArticleReply'
+        delete:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_DeleteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.DeleteArticleReply'
+    /api/articles/{slug}/comments:
+        get:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_GetComments
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.MultipleCommentsReply'
+        post:
+            tags:
+                - Xiaohongshu
+            description: 评论
+            operationId: Xiaohongshu_AddComments
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.AddCommentsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.SingleCommentReply'
+    /api/articles/{slug}/comments/{id}:
+        delete:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_DeleteComments
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.DeleteCommentsReply'
+    /api/articles/{slug}/favourite:
+        post:
+            tags:
+                - Xiaohongshu
+            description: 帖子 赞同/不赞同
+            operationId: Xiaohongshu_FavouriteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.FavouriteArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.SingleArticleReply'
+        delete:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_UnFavouriteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.SingleArticleReply'
+    /api/profiles/{username}:
+        get:
+            tags:
+                - Xiaohongshu
+            description: 个人简介相关
+            operationId: Xiaohongshu_GetProfile
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.ProfileReply'
+    /api/profiles/{username}/follow:
+        post:
+            tags:
+                - Xiaohongshu
+            description: 关注
+            operationId: Xiaohongshu_FollowUser
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.FollowUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.ProfileReply'
+        delete:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_UnFollowUser
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.ProfileReply'
+    /api/tags:
+        get:
+            tags:
+                - Xiaohongshu
+            description: 标签
+            operationId: Xiaohongshu_GetTags
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.TagListReply'
+    /api/user:
+        get:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_GetCurrentUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.UserReply'
+        put:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_UpdatetUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.UserReply'
+    /api/user/login:
+        post:
+            tags:
+                - Xiaohongshu
+            description: 用户相关
+            operationId: Xiaohongshu_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.UserReply'
+    /api/users:
+        post:
+            tags:
+                - Xiaohongshu
+            operationId: Xiaohongshu_Register
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xiaohongshu.v1.RegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xiaohongshu.v1.UserReply'
 components:
     schemas:
-        helloworld.v1.HelloReply:
+        xiaohongshu.v1.AddCommentsRequest:
             type: object
             properties:
-                message:
+                comment:
+                    $ref: '#/components/schemas/xiaohongshu.v1.AddCommentsRequest_Comment'
+                slug:
                     type: string
-            description: The response message containing the greetings
+        xiaohongshu.v1.AddCommentsRequest_Comment:
+            type: object
+            properties:
+                body:
+                    type: string
+        xiaohongshu.v1.CreateArticleRequest:
+            type: object
+            properties:
+                article:
+                    $ref: '#/components/schemas/xiaohongshu.v1.CreateArticleRequest_Article'
+        xiaohongshu.v1.CreateArticleRequest_Article:
+            type: object
+            properties:
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+        xiaohongshu.v1.DeleteArticleReply:
+            type: object
+            properties:
+                slug:
+                    type: string
+        xiaohongshu.v1.DeleteCommentsReply:
+            type: object
+            properties: {}
+        xiaohongshu.v1.FavouriteArticleRequest:
+            type: object
+            properties:
+                slug:
+                    type: string
+            description: 帖子 赞同、不赞同
+        xiaohongshu.v1.FollowUserRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+        xiaohongshu.v1.LoginRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/xiaohongshu.v1.LoginRequest_User'
+        xiaohongshu.v1.LoginRequest_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        xiaohongshu.v1.MultipleArticlesReply:
+            type: object
+            properties:
+                articles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xiaohongshu.v1.MultipleArticlesReply_Articles'
+                articlesCount:
+                    type: integer
+                    format: uint32
+        xiaohongshu.v1.MultipleArticlesReply_Articles:
+            type: object
+            properties:
+                slug:
+                    type: string
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+                favorited:
+                    type: boolean
+                favoritesCount:
+                    type: integer
+                    format: uint32
+                author:
+                    $ref: '#/components/schemas/xiaohongshu.v1.MultipleArticlesReply_Author'
+        xiaohongshu.v1.MultipleArticlesReply_Author:
+            type: object
+            properties:
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+        xiaohongshu.v1.MultipleCommentsReply:
+            type: object
+            properties:
+                comments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xiaohongshu.v1.MultipleCommentsReply_Comments'
+        xiaohongshu.v1.MultipleCommentsReply_Author:
+            type: object
+            properties:
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+        xiaohongshu.v1.MultipleCommentsReply_Comments:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+                body:
+                    type: string
+                author:
+                    $ref: '#/components/schemas/xiaohongshu.v1.MultipleCommentsReply_Author'
+        xiaohongshu.v1.ProfileReply:
+            type: object
+            properties:
+                profile:
+                    $ref: '#/components/schemas/xiaohongshu.v1.ProfileReply_Profile'
+        xiaohongshu.v1.ProfileReply_Profile:
+            type: object
+            properties:
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+        xiaohongshu.v1.RegisterRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/xiaohongshu.v1.RegisterRequest_User'
+        xiaohongshu.v1.RegisterRequest_User:
+            type: object
+            properties:
+                username:
+                    type: string
+                email:
+                    type: string
+                password:
+                    type: string
+        xiaohongshu.v1.SingleArticleReply:
+            type: object
+            properties:
+                article:
+                    $ref: '#/components/schemas/xiaohongshu.v1.SingleArticleReply_Article'
+        xiaohongshu.v1.SingleArticleReply_Article:
+            type: object
+            properties:
+                slug:
+                    type: string
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+                favorited:
+                    type: boolean
+                favoritesCount:
+                    type: integer
+                    format: uint32
+                author:
+                    $ref: '#/components/schemas/xiaohongshu.v1.SingleArticleReply_Author'
+        xiaohongshu.v1.SingleArticleReply_Author:
+            type: object
+            properties:
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+        xiaohongshu.v1.SingleCommentReply:
+            type: object
+            properties:
+                comment:
+                    $ref: '#/components/schemas/xiaohongshu.v1.SingleCommentReply_Comment'
+        xiaohongshu.v1.SingleCommentReply_Author:
+            type: object
+            properties:
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+        xiaohongshu.v1.SingleCommentReply_Comment:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+                body:
+                    type: string
+                author:
+                    $ref: '#/components/schemas/xiaohongshu.v1.SingleCommentReply_Author'
+        xiaohongshu.v1.TagListReply:
+            type: object
+            properties:
+                tags:
+                    type: array
+                    items:
+                        type: string
+        xiaohongshu.v1.UpdateArticleRequest:
+            type: object
+            properties:
+                article:
+                    $ref: '#/components/schemas/xiaohongshu.v1.UpdateArticleRequest_Article'
+                slug:
+                    type: string
+        xiaohongshu.v1.UpdateArticleRequest_Article:
+            type: object
+            properties:
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+        xiaohongshu.v1.UpdateUserRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/xiaohongshu.v1.UpdateUserRequest_User'
+        xiaohongshu.v1.UpdateUserRequest_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+        xiaohongshu.v1.UserReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/xiaohongshu.v1.UserReply_User'
+        xiaohongshu.v1.UserReply_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                token:
+                    type: string
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
 tags:
-    - name: Greeter
+    - name: Xiaohongshu
