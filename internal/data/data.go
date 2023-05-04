@@ -10,7 +10,8 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewDB,NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewData, NewDB, NewUserRepo, NewProfileRepo)
+
 
 // Data .
 type Data struct {
@@ -23,7 +24,7 @@ func NewData(c *conf.Data, logger log.Logger, db *gorm.DB) (*Data, func(), error
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
 	}
-	return &Data{}, cleanup, nil
+	return &Data{db:db}, cleanup, nil
 }
 
 

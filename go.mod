@@ -9,6 +9,8 @@ require (
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0
+	gorm.io/driver/mysql v1.5.0
+	gorm.io/gorm v1.25.0
 )
 
 require (
@@ -39,6 +41,4 @@ require (
 	golang.org/x/tools v0.8.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/mysql v1.5.0 // indirect
-	gorm.io/gorm v1.25.0 // indirect
 )

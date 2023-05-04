@@ -16,7 +16,35 @@ API 定义与生成
     讲真，配置这块儿，比 go-zero 强，不是黑盒，要自己翻代码才知道写的啥
 
 
-项目结构与依赖注入
+项目结构与依赖注入（通过 google wire 实现）
+
+    解耦 
+
+        service/
+            NewXiaohongshuService(?)
+                biz.UserUseCase
+        
+        biz/
+            NewUserUseCase(?)
+                UserRepo (interface)  # 拼装实体以及通过编译器确保方法都实现
+                ProfileRepo
+
+        data/
+            NewUserRepo(?) && NewProfileRepo(?)
+                (Data)
+
+            NewData(?)
+                DB
+
+            NewDB(?)
+                gorm
+        
+        config/
+            database.dsn
+        
+
+    但也很难构思这么巧妙，依赖也很难搞
+
 
 
 biz 层开发和中间件

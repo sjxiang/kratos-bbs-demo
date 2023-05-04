@@ -2,10 +2,9 @@ syntax = "proto3";
 
 package xiaohongshu.v1;  // namespace
 
-import "google/api/annotations.proto";
-
 option go_package = "kratos-bbs-demo/api/xiaohongshu/v1;v1";  // code generate 在 xx 目录下
 
+import "google/api/annotations.proto";
 
 // 服务 - 小红书
 service Xiaohongshu {

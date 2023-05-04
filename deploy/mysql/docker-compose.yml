@@ -13,4 +13,5 @@ services:
       - 3306:3306
     # 数据挂载
     volumes:
-      - "./data:/var/lib/mysql"
+      # - "./data:/var/lib/mysql"
+      - "/tmp/mysql/data:/var/lib/mysql"

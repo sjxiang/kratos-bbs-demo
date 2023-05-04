@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package kratos.api;
 
 option go_package = "kratos-bbs-demo/internal/conf;conf";
