@@ -32,11 +32,12 @@ func NewDB(c *conf.Data) *gorm.DB {
 	db, err := gorm.Open(mysql.Open(c.Database.Dsn), &gorm.Config{
 			SkipDefaultTransaction: true,  // 关闭默认事务
 			PrepareStmt: true,             // 缓存预编译语句
+			DisableForeignKeyConstraintWhenMigrating: true,  // 不允许外键
 	})
 	if err != nil {
 		panic("failed to connect database")
 	}
-	if err := db.AutoMigrate(); err != nil {
+	if err := db.AutoMigrate(&Article{}); err != nil {
 		panic(err)
 	} 
 	

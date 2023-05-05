@@ -3,9 +3,6 @@ package biz
 import (
 	"context"
 
-	// v1 "kratos-bbs-demo/api/xiaohongshu/v1"
-
-	// "github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
@@ -36,12 +33,3 @@ func NewSocialUsecase(
 	return &SocialUsecase{ar:ar, cr:cr, tr:tr, log: log.NewHelper(logger)}
 }
 
-
-// func (uc *GreeterUsecase) CreateGreeter(ctx context.Context, g *Greeter) (*Greeter, error) {
-// 	uc.log.WithContext(ctx).Infof("CreateGreeter: %v", g.Hello)
-// 	return uc.repo.Save(ctx, g)
-// }
-
-func (uc *SocialUsecase) CreateArticle(ctx context.Context) {
-
-}
